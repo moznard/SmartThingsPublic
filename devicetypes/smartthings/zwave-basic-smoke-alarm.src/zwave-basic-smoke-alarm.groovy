@@ -195,12 +195,12 @@ def zwaveEvent(physicalgraph.zwave.commands.wakeupv1.WakeUpNotification cmd, res
 				zwave.notificationV3.notificationGet(notificationType: 0x01).format(),
 				zwave.batteryV1.batteryGet().format(),
 				zwave.wakeUpV1.wakeUpNoMoreInformation().format()
-		]), 2000 )
+		], 2000))
 	} else {
 		results << response(delayBetween([
 				zwave.notificationV3.notificationGet(notificationType: 0x01).format(),
 				zwave.wakeUpV1.wakeUpNoMoreInformation().format()
-		]), 2000 )
+		], 2000))
 	}
 }
 
@@ -252,5 +252,6 @@ def initialPoll() {
 	// check initial battery and smoke sensor state
 	request << zwave.batteryV1.batteryGet()
 	request << zwave.sensorBinaryV2.sensorBinaryGet(sensorType: zwave.sensorBinaryV2.SENSOR_TYPE_SMOKE)
+	if (zwaveInfo.mfr != "0138") request << zwave.wakeUpV1.wakeUpIntervalSet(seconds: 4*60*60, nodeid: zwaveHubNodeId)
 	commands(request, 500) + ["delay 6000", command(zwave.wakeUpV1.wakeUpNoMoreInformation())]
 }
